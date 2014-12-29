@@ -518,6 +518,7 @@
 	}
 	[self.scrollLayer scrollToPoint:scrollToOffset];
 	self.lastPoint = scrollToOffset;
+    [self scrollToIndex:_selectedSegmentIndex];
 }
 
 - (void)indicatorChangeFromIndex: (NSInteger)fromIndex ToIndex: (NSInteger)toIndex animated: (BOOL)animated{
