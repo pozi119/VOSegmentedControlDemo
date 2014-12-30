@@ -52,6 +52,7 @@
 			textLayer.fontSize        = self.font.pointSize;
 			textLayer.foregroundColor = self.textColor.CGColor;
 			textLayer.string          = self.segment.text;
+            textLayer.contentsScale   = 2.0;
 			_textLayer                = textLayer;
 			[self addSublayer:_textLayer];
 		}
@@ -70,6 +71,7 @@
 			selectedTextLayer.foregroundColor = self.selectedTextColor.CGColor;
 			selectedTextLayer.string          = self.segment.selectedText;
 			_selectedTextLayer                = selectedTextLayer;
+            selectedTextLayer.contentsScale   = 2.0;
 			[self addSublayer:selectedTextLayer];
 		}
 	}
