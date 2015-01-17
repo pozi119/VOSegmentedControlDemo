@@ -94,7 +94,7 @@
     self.scrollLayer             = [CAScrollLayer layer];
 
 	// test
-    _selectedSegmentIndex        = 1;
+    _selectedSegmentIndex        = 0;
 }
 
 - (CALayer *)indicatorLayer{
@@ -280,6 +280,7 @@
 	self.indicatorLayer.position = CGPointMake(self.segSize.width * self.selectedSegmentIndex + self.segSize.width / 2, [self indicatorBoundsY]);
 	self.indicatorPos = self.indicatorLayer.position;
 	[self.scrollLayer addSublayer:self.indicatorLayer];
+    [self scrollToIndex:_selectedSegmentIndex];
 }
 
 - (CGFloat)indicatorBoundsY{
@@ -518,7 +519,6 @@
 	}
 	[self.scrollLayer scrollToPoint:scrollToOffset];
 	self.lastPoint = scrollToOffset;
-    [self scrollToIndex:_selectedSegmentIndex];
 }
 
 - (void)indicatorChangeFromIndex: (NSInteger)fromIndex ToIndex: (NSInteger)toIndex animated: (BOOL)animated{

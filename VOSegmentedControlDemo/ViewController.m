@@ -59,6 +59,7 @@
 	segctrl2.indicatorThickness = 6;
 	segctrl2.indicatorCornerRadius = 3;
 	segctrl2.tag = 2;
+    segctrl2.selectedSegmentIndex = 7;
 	[self.view addSubview:segctrl2];
 	[segctrl2 setIndexChangeBlock:^(NSInteger index) {
 		NSLog(@"2: block --> %@", @(index));
