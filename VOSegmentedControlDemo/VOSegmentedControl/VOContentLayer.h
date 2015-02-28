@@ -31,6 +31,7 @@ typedef NS_ENUM(NSUInteger, VOContentStyle) {
 
 @property (nonatomic, strong) VOSegment *segment;
 @property (nonatomic, assign) BOOL		selected;
+@property (nonatomic, assign) BOOL      clung;  // 当图片较小时,是否紧贴文字
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated completion: (void (^)())completion;
 
