@@ -62,6 +62,9 @@ enum {
 @property (nonatomic, strong ) UIFont          *textFont;
 @property (nonatomic, strong ) UIFont          *selectedTextFont;
 
+#pragma mark 内容
+@property (nonatomic, strong ) NSArray         *segments;
+
 #pragma mark indexchange
 @property (nonatomic, weak  ) void  (^indexChangeBlock)(NSInteger index);
 

@@ -7,7 +7,7 @@
 //
 
 #import "VOContentLayer.h"
-#define kTextImagePadding 8
+#define kTextImagePadding ((self.clung)?2:8)
 
 @interface VOContentLayer ()
 
@@ -29,7 +29,7 @@
     VOContentLayer *contentLayer            = [VOContentLayer layer];
     contentLayer.frame                      = frame;
 	contentLayer.contentInsets              = insets;
-    contentLayer.font                       = [UIFont systemFontOfSize:17];
+    contentLayer.font                       = [UIFont systemFontOfSize:14];
     contentLayer.selectedFont               = contentLayer.font;
     contentLayer.textColor                  = [UIColor darkTextColor];
     contentLayer.selectedTextColor          = contentLayer.textColor;
@@ -167,47 +167,25 @@
 	CGRect contentRect = UIEdgeInsetsInsetRect(self.bounds, self.contentInsets);
 	CGSize size = contentRect.size;
 	CGRect frame = CGRectZero;
-    if (self.clung) {
-        switch (self.contentStyle) {
-            case VOContentStyleTextAlone:
-                frame = CGRectMake((size.width - textSize.width) / 2, (size.height - textSize.height) / 2, textSize.width, textSize.height);
-                break;
-            case VOContentStyleImageLeft:
-                frame = CGRectMake(size.height + kTextImagePadding, (size.height - textSize.height) / 2, textSize.width, textSize.height);
-                break;
-            case VOContentStyleImageRight:
-                frame = CGRectMake(size.width - size.height - textSize.width - kTextImagePadding, (size.height - textSize.height) / 2, textSize.width, textSize.height);
-                break;
-            case VOContentStyleImageTop:
-                frame = CGRectMake((size.width - textSize.width) / 2, size.height * 0.618 + kTextImagePadding, textSize.width, textSize.height);
-                break;
-            case VOContentStyleImageBottom:
-                frame = CGRectMake((size.width - textSize.width) / 2, size.height * 0.382 - textSize.height - kTextImagePadding, textSize.width, textSize.height);
-                break;
-            default:
-                break;
-        }
-    }
-    else{
-        switch (self.contentStyle) {
-            case VOContentStyleTextAlone:
-                frame = CGRectMake((size.width - textSize.width) / 2, (size.height - textSize.height) / 2, textSize.width, textSize.height);
-                break;
-            case VOContentStyleImageLeft:
-                frame = CGRectMake(size.height + (size.width - size.height - textSize.width) / 2, (size.height - textSize.height) / 2, textSize.width, textSize.height);
-                break;
-            case VOContentStyleImageRight:
-                frame = CGRectMake((size.width - size.height - textSize.width) / 2, (size.height - textSize.height) / 2, textSize.width, textSize.height);
-                break;
-            case VOContentStyleImageTop:
-                frame = CGRectMake((size.width - textSize.width) / 2, size.height * 0.618 + (size.height * 0.382 - textSize.height) / 2, textSize.width, textSize.height);
-                break;
-            case VOContentStyleImageBottom:
-                frame = CGRectMake((size.width - textSize.width) / 2, (size.height * 0.382 - textSize.height) / 2, textSize.width, textSize.height);
-                break;
-            default:
-                break;
-        }
+    frame.size = textSize;
+    switch (self.contentStyle) {
+        case VOContentStyleTextAlone:
+            frame.origin = CGPointMake((size.width - textSize.width) / 2, (size.height - textSize.height) / 2);
+            break;
+        case VOContentStyleImageLeft:
+            frame.origin = CGPointMake(size.height + kTextImagePadding, (size.height - textSize.height) / 2);
+            break;
+        case VOContentStyleImageRight:
+            frame.origin = CGPointMake(size.width - size.height - textSize.width - kTextImagePadding, (size.height - textSize.height) / 2);
+            break;
+        case VOContentStyleImageTop:
+            frame.origin = CGPointMake((size.width - textSize.width) / 2, size.height * 0.618 + kTextImagePadding);
+            break;
+        case VOContentStyleImageBottom:
+            frame.origin = CGPointMake((size.width - textSize.width) / 2, size.height * 0.382 - textSize.height - kTextImagePadding);
+            break;
+        default:
+            break;
     }
 	frame = CGRectOffset(frame, self.contentInsets.left, self.contentInsets.top);
 	return frame;
@@ -215,84 +193,69 @@
 
 //计算imageLayer显示的frame
 - (CGRect)imageLayerFrameForImage: (UIImage *)image{
-	if (!image) {
-		return CGRectZero;
-	}
+    CGSize imageSize = [self getImageSize:image];
+    CGRect contentRect = UIEdgeInsetsInsetRect(self.bounds, self.contentInsets);
+    CGSize size = contentRect.size;
+    CGRect frame = CGRectZero;
+    frame.size = imageSize;
+    switch (self.contentStyle) {
+        case VOContentStyleImageAlone:
+            frame.origin = CGPointMake((size.width - imageSize.width) / 2, (size.height - imageSize.height) / 2);
+            break;
+        case VOContentStyleImageLeft:
+            frame.origin = CGPointMake(size.height - imageSize.width - kTextImagePadding, (size.height - imageSize.height) / 2);
+            break;
+        case VOContentStyleImageRight:
+            frame.origin = CGPointMake(size.height + kTextImagePadding, (size.height - imageSize.height) / 2);
+            break;
+        case VOContentStyleImageTop:
+            frame.origin = CGPointMake((size.width - imageSize.width) / 2, size.height * 0.618 - imageSize.height - kTextImagePadding);
+            break;
+        case VOContentStyleImageBottom:
+            frame.origin = CGPointMake((size.width - imageSize.width) / 2, size.height * 0.382 + kTextImagePadding);
+            break;
+        default:
+            break;
+    }
+    frame = CGRectOffset(frame, self.contentInsets.left, self.contentInsets.top);
+    return frame;
+}
+
+- (CGSize)getImageSize:(UIImage *)image{
     CGSize maxImageSize = CGSizeZero;
     CGSize size         = self.bounds.size;
     CGSize imageSize    = image.size;
-    CGRect frame        = CGRectZero;
-
-	switch (self.contentStyle) {
-		case VOContentStyleImageLeft:
-		case VOContentStyleImageRight:
-			maxImageSize = CGSizeMake(size.height, size.height);
-			break;
-		case VOContentStyleImageTop:
-		case VOContentStyleImageBottom:
-			maxImageSize = CGSizeMake(size.width, size.height * 0.618);
-			break;
-			
-		case VOContentStyleImageAlone:
-			maxImageSize = self.bounds.size;
-			break;
-			
-		default:
-			return CGRectZero;
-	}
-	
-    CGSize showSize      = CGSizeZero;
+    
+    switch (self.contentStyle) {
+        case VOContentStyleImageLeft:
+        case VOContentStyleImageRight:
+            maxImageSize = CGSizeMake(size.height, size.height);
+            break;
+        case VOContentStyleImageTop:
+        case VOContentStyleImageBottom:
+            maxImageSize = CGSizeMake(size.width, size.height * 0.618);
+            break;
+            
+        case VOContentStyleImageAlone:
+            maxImageSize = self.bounds.size;
+            break;
+            
+        default:
+            return CGSizeZero;
+    }
     CGFloat imageRatio   = imageSize.width / imageSize.height;
     CGFloat maxSizeRatio = maxImageSize.width / maxImageSize.height;
-	if (imageRatio >= maxSizeRatio && imageSize.width >= maxImageSize.width) {
-        showSize.width  = maxImageSize.width;
-        showSize.height = imageSize.height * maxImageSize.width/imageSize.width;
-	}
-	else if(imageRatio < maxSizeRatio && imageSize.height >= maxImageSize.height){
-        showSize.width  = imageSize.width * maxImageSize.height/imageSize.height;
-        showSize.height = maxImageSize.height;
-	}
-	else{
-        showSize.width  = imageSize.width;
-        showSize.height = imageSize.height;
-	}
-    if (self.clung && showSize.width >= imageSize.width && showSize.height >= imageSize.height) {
-        showSize = imageSize;
-        switch (self.contentStyle) {
-            case VOContentStyleImageRight:
-                frame.origin.x = self.bounds.size.width - maxImageSize.width;
-                frame.origin.y = (maxImageSize.height - showSize.height) / 2.0;
-                break;
-                
-            case VOContentStyleImageTop:
-                frame.origin.x = (maxImageSize.width - showSize.width) / 2.0;
-                frame.origin.y = maxImageSize.height - showSize.height;
-                break;
-                
-            case VOContentStyleImageBottom:
-                frame.origin.x = (maxImageSize.width - showSize.width) / 2.0;
-                frame.origin.y = self.bounds.size.height - maxImageSize.height;
-                break;
-                
-            default:
-                frame.origin.x = maxImageSize.width - showSize.width;
-                frame.origin.y = (maxImageSize.height - showSize.height) / 2.0;
-                break;
-        }
-        frame.size = showSize;
+    CGSize showSize = CGSizeZero;
+    if(imageRatio > maxSizeRatio){
+        showSize.width = MIN(maxImageSize.width, imageSize.width);
+        showSize.height = imageSize.height / (imageSize.width / showSize.width);
     }
     else{
-        frame.origin.x = (maxImageSize.width - showSize.width) / 2.0;
-        frame.origin.y = (maxImageSize.height - showSize.height) / 2.0;
-        frame.size = showSize;
-        if (self.contentStyle == VOContentStyleImageRight) {
-            frame.origin.x += self.bounds.size.width - maxImageSize.width;
-        }
-        if (self.contentStyle == VOContentStyleImageBottom) {
-            frame.origin.y += self.bounds.size.height - maxImageSize.height;
-        }
+        showSize.height = MIN(maxImageSize.height, imageSize.height);
+        showSize.width = imageSize.width / (imageSize.height / showSize.height);
     }
-	return frame;
+
+    return showSize;
 }
 
 - (CGSize)getTextSize: (id)text andFont: (UIFont *)font{

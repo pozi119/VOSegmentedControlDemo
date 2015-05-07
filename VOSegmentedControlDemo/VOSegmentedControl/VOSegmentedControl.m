@@ -31,31 +31,24 @@
 @implementation VOSegmentedControl
 
 - (instancetype)initWithFrame:(CGRect)frame{
-	if (self = [super initWithFrame:frame]) {
-		[self commonInit];
-	}
-	return self;
+    if (self = [super initWithFrame:frame]) {
+        [self commonInit];
+    }
+    return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder{
+    if (self = [super initWithCoder:aDecoder]) {
+        [self commonInit];
+    }
+    return self;
 }
 
 - (instancetype)initWithSegments:(NSArray *)segments{
 	if (self = [super initWithFrame:CGRectZero]) {
-		// 1. 初始化控件各种参数
-		[self commonInit];
-		// 2. 初始化存放segments各种参数的数组
-		[self.segmentArray removeAllObjects];
-		for (id segment in segments) {
-			if ([segment isKindOfClass:[VOSegment class]]) {
-				if ([VOSegment isValidSegment:segment]) {
-					[self.segmentArray addObject:segment];
-				}
-			}
-			if ([segment isKindOfClass:[NSDictionary class]]) {
-				VOSegment *seg = [VOSegment segmentFromDictionary:segment];
-				if ([VOSegment isValidSegment:seg]) {
-					[self.segmentArray addObject:[VOSegment segmentFromDictionary:segment]];
-				}
-			}
-		}
+        [self commonInit];
+		// 1. 初始化存放segments各种参数的数组
+        [self setSegments:segments];
 	}
 	return self;
 }
@@ -68,23 +61,23 @@
 	// ScrollView
 
 	// 样式
-    self.contentMode             = VOContentStyleTextAlone;
+    self.contentStyle            = VOContentStyleTextAlone;
     self.indicatorStyle          = VOSegCtrlIndicatorStyleBox;
     self.animationType           = VOSegCtrlAnimationTypeBounce;
     self.allowNoSelection        = YES;
 	self.scrollBounce            = YES;
 
 	// 色彩
-    self.textColor               = [UIColor colorWithRed:1.000 green:0.600 blue:0.600 alpha:1.000];
+    self.textColor               = [UIColor blackColor];
     self.selectedTextColor       = [UIColor redColor];
-    self.backgroundColor         = [UIColor clearColor];
-    self.selectedBackgroundColor = [UIColor colorWithRed:0.600 green:1.000 blue:0.400 alpha:1.000];
+    self.backgroundColor         = [UIColor whiteColor];
+    self.selectedBackgroundColor = [UIColor whiteColor];
 
 	// indicator属性
     self.indicatorThickness      = 0;
     self.indicatorCornerRadius   = 0;
     self.indicatorColor          = [UIColor clearColor];
-    self.selectedIndicatorColor  = [UIColor purpleColor];
+    self.selectedIndicatorColor  = [UIColor redColor];
 
 	// 分段
     self.textFont                = [UIFont systemFontOfSize:14];
@@ -132,6 +125,28 @@
 	return self.segmentArray.count;
 }
 
+- (void)setSegments:(NSArray *)segments{
+    [self.segmentArray removeAllObjects];
+    for (id segment in segments) {
+        if ([segment isKindOfClass:[VOSegment class]]) {
+            if ([VOSegment isValidSegment:segment]) {
+                [self.segmentArray addObject:segment];
+            }
+        }
+        if ([segment isKindOfClass:[NSDictionary class]]) {
+            VOSegment *seg = [VOSegment segmentFromDictionary:segment];
+            if ([VOSegment isValidSegment:seg]) {
+                [self.segmentArray addObject:[VOSegment segmentFromDictionary:segment]];
+            }
+        }
+    }
+    [self setNeedsDisplay];
+}
+
+- (NSArray *)segments{
+    return _segmentArray;
+}
+
 - (void)insertSegment:(id)segment atIndex:(NSUInteger)index animated:(BOOL)animated{
 	// 1. 先讲segment插入数组
 	VOSegment *willInsertSegment = nil;
@@ -141,12 +156,13 @@
 	if ([segment isKindOfClass:[NSDictionary class]]) {
 		willInsertSegment = [VOSegment segmentFromDictionary:segment];
 	}
-	if (![VOSegment isValidSegment:segment] || index >= self.segmentArray.count) {
-		return;
-	}
-	[self.segmentArray insertObject:willInsertSegment atIndex:index];
-	
-	[self setNeedsDisplay];
+    if (willInsertSegment) {
+        if (![VOSegment isValidSegment:willInsertSegment] || index >= self.segmentArray.count) {
+            return;
+        }
+        [self.segmentArray insertObject:willInsertSegment atIndex:index];
+        [self setNeedsDisplay];
+    }
 }
 
 - (void)removeSegmentAtIndex:(NSUInteger)index animated:(BOOL)animated{
@@ -179,12 +195,14 @@
 	if ([segment isKindOfClass:[NSDictionary class]]) {
 		willReplaceSegment = [VOSegment segmentFromDictionary:segment];
 	}
-	if (![VOSegment isValidSegment:segment] || index >= self.segmentArray.count) {
-		return;
-	}
-	[self.segmentArray replaceObjectAtIndex:index withObject:willReplaceSegment];
-	
-	[self setNeedsDisplay];
+    if (willReplaceSegment) {
+        if (![VOSegment isValidSegment:willReplaceSegment] || index >= self.segmentArray.count) {
+            return;
+        }
+        [self.segmentArray replaceObjectAtIndex:index withObject:willReplaceSegment];
+        
+        [self setNeedsDisplay];
+    }
 }
 
 - (VOSegment *)segmentAtIndex:(NSUInteger)index{
@@ -228,59 +246,62 @@
 }
 
 - (void)drawRect:(CGRect)rect {
-	self.scrollLayer.frame = rect;
-	self.scrollLayer.backgroundColor = [UIColor clearColor].CGColor;
-
-	// 1. 填充背景
-	[self.backgroundColor setFill];
-	UIRectFill(self.bounds);
-	
-	// 2. 移除所有sublayers
-	self.scrollLayer.sublayers = nil;
-	self.layer.sublayers = nil;
-	
-	// 3. 添加scrollLayer
-	[self.layer addSublayer:self.scrollLayer];
-	
-	// 4. 计算segmentSize, contentSize,contentInsets, textLayer和imageLayer在当前segment中的Frame;
-	CGSize segSize, contentSize;
-	UIEdgeInsets contentInsets;
-	[self generateSegmentSize:&segSize andContentSize:&contentSize andContentInsets:&contentInsets];
-	self.segSize = segSize;
-	
-	// 5. 添加contentLayers
-	[self.contentLayerArray removeAllObjects];
-	for (NSUInteger i = 0; i < self.segmentArray.count; i ++) {
-		VOContentLayer *contentLayer = [VOContentLayer contentLayerWithFrame:CGRectMake(segSize.width * i, 0, segSize.width, segSize.height)
-															   contentInsets:contentInsets
-																	 segment:self.segmentArray[i]
-																contentStyle:self.contentStyle];
-		contentLayer.textColor = self.textColor;
-		contentLayer.selectedTextColor = self.selectedTextColor;
-		contentLayer.normalBackgroundColor = self.backgroundColor;
-		contentLayer.selectedbackgroundColor = self.selectedBackgroundColor;
-		contentLayer.font = self.textFont;
-		contentLayer.selectedFont = self.selectedTextFont;
-		if (self.indicatorStyle == VOSegCtrlIndicatorStyleBox) {
-			contentLayer.cornerRadius = self.indicatorCornerRadius;
-		}
-		[self.contentLayerArray addObject:contentLayer];
-	}
-	
-	[self.contentLayerArray enumerateObjectsUsingBlock:^(VOContentLayer *contentLayer, NSUInteger idx, BOOL *stop) {
-		[self.scrollLayer addSublayer:contentLayer];
-		// 6.设置选中状态
-		if (idx == self.selectedSegmentIndex) {
-			[contentLayer setSelected:YES];
-		}
-	}];
-	
-	self.indicatorLayer.frame = self.scrollLayer.frame;
-	self.indicatorLayer.bounds = [self indicatorBounds];
-	self.indicatorLayer.position = CGPointMake(self.segSize.width * self.selectedSegmentIndex + self.segSize.width / 2, [self indicatorBoundsY]);
-	self.indicatorPos = self.indicatorLayer.position;
-	[self.scrollLayer addSublayer:self.indicatorLayer];
-    [self scrollToIndex:_selectedSegmentIndex];
+    [super drawRect:rect];
+    if (self.segments.count > 0) {
+        self.scrollLayer.frame = rect;
+        self.scrollLayer.backgroundColor = [UIColor clearColor].CGColor;
+        
+        // 1. 填充背景
+        [self.backgroundColor setFill];
+        UIRectFill(self.bounds);
+        
+        // 2. 移除所有sublayers
+        self.scrollLayer.sublayers = nil;
+        self.layer.sublayers = nil;
+        
+        // 3. 添加scrollLayer
+        [self.layer addSublayer:self.scrollLayer];
+        
+        // 4. 计算segmentSize, contentSize,contentInsets, textLayer和imageLayer在当前segment中的Frame;
+        CGSize segSize, contentSize;
+        UIEdgeInsets contentInsets;
+        [self generateSegmentSize:&segSize andContentSize:&contentSize andContentInsets:&contentInsets];
+        self.segSize = segSize;
+        
+        // 5. 添加contentLayers
+        [self.contentLayerArray removeAllObjects];
+        for (NSUInteger i = 0; i < self.segmentArray.count; i ++) {
+            VOContentLayer *contentLayer = [VOContentLayer contentLayerWithFrame:CGRectMake(segSize.width * i, 0, segSize.width, segSize.height)
+                                                                   contentInsets:contentInsets
+                                                                         segment:self.segmentArray[i]
+                                                                    contentStyle:self.contentStyle];
+            contentLayer.textColor = self.textColor;
+            contentLayer.selectedTextColor = self.selectedTextColor;
+            contentLayer.normalBackgroundColor = self.backgroundColor;
+            contentLayer.selectedbackgroundColor = self.selectedBackgroundColor;
+            contentLayer.font = self.textFont;
+            contentLayer.selectedFont = self.selectedTextFont;
+            if (self.indicatorStyle == VOSegCtrlIndicatorStyleBox) {
+                contentLayer.cornerRadius = self.indicatorCornerRadius;
+            }
+            [self.contentLayerArray addObject:contentLayer];
+        }
+        
+        [self.contentLayerArray enumerateObjectsUsingBlock:^(VOContentLayer *contentLayer, NSUInteger idx, BOOL *stop) {
+            [self.scrollLayer addSublayer:contentLayer];
+            // 6.设置选中状态
+            if (idx == self.selectedSegmentIndex) {
+                [contentLayer setSelected:YES];
+            }
+        }];
+        
+        self.indicatorLayer.frame = self.scrollLayer.frame;
+        self.indicatorLayer.bounds = [self indicatorBounds];
+        self.indicatorLayer.position = CGPointMake(self.segSize.width * self.selectedSegmentIndex + self.segSize.width / 2, [self indicatorBoundsY]);
+        self.indicatorPos = self.indicatorLayer.position;
+        [self.scrollLayer addSublayer:self.indicatorLayer];
+        [self scrollToIndex:_selectedSegmentIndex];
+    }
 }
 
 - (CGFloat)indicatorBoundsY{

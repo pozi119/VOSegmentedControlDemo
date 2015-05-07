@@ -8,6 +8,14 @@
 
 #import "VOSegment.h"
 
+NSString const *VOSegmentText = @"text";
+NSString const *VOSegmentSelectedText = @"selectedText";
+NSString const *VOSegmentImage = @"image";
+NSString const *VOSegmentSelectedImage = @"selectedImage";
+NSString const *VOSegmentBackgroundImage = @"backgroundImage";
+NSString const *VOSegmentSelectedBackgroundImage = @"selectedBackgroundImage";
+
+
 @implementation VOSegment
 
 + (UIImage *)imageFormUIImageOrNSString: (id)image{
@@ -24,12 +32,12 @@
 
 + (instancetype)segmentFromDictionary:(NSDictionary *)segmentdic{
 	VOSegment *segment = [[VOSegment alloc] init];
-	segment.text                    = segmentdic[@"text"];
-	segment.selectedText            = segmentdic[@"selectedText"];
-	segment.image                   = [VOSegment imageFormUIImageOrNSString:segmentdic[@"image"]];
-	segment.selectedImage           = [VOSegment imageFormUIImageOrNSString:segmentdic[@"selectedImage"]];
-	segment.backgroundImage         = [VOSegment imageFormUIImageOrNSString:segmentdic[@"backgroundImage"]];
-	segment.selectedBackgroundImage = [VOSegment imageFormUIImageOrNSString:segmentdic[@"selectedBackgroundImage"]];
+	segment.text                    = segmentdic[VOSegmentText];
+	segment.selectedText            = segmentdic[VOSegmentSelectedText];
+	segment.image                   = [VOSegment imageFormUIImageOrNSString:segmentdic[VOSegmentImage]];
+	segment.selectedImage           = [VOSegment imageFormUIImageOrNSString:segmentdic[VOSegmentSelectedImage]];
+	segment.backgroundImage         = [VOSegment imageFormUIImageOrNSString:segmentdic[VOSegmentBackgroundImage]];
+	segment.selectedBackgroundImage = [VOSegment imageFormUIImageOrNSString:segmentdic[VOSegmentSelectedBackgroundImage]];
 	
 	if (segmentdic[@"enabled"]) {
 		segment.enabled             = [segmentdic[@"enabled"] boolValue];

@@ -8,6 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+UIKIT_EXTERN NSString const *VOSegmentText;
+UIKIT_EXTERN NSString const *VOSegmentSelectedText;
+UIKIT_EXTERN NSString const *VOSegmentImage;
+UIKIT_EXTERN NSString const *VOSegmentSelectedImage;
+UIKIT_EXTERN NSString const *VOSegmentBackgroundImage;
+UIKIT_EXTERN NSString const *VOSegmentSelectedBackgroundImage;
+
 /**
  *  描述Segment的数据模型
  */
