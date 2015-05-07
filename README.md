@@ -1,4 +1,4 @@
-# VOSegmentedControlDemo
+# VOSegmentedControl
 
 1. 支持图片和文字,包含6种简单排版: 只有文字, 只有图片, 图片在上下左右
      只有图片时,图片如果比分段大,则只铺满整个分段,若比分段小,则为图片大小居中
