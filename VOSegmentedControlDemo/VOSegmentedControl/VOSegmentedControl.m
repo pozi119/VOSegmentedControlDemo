@@ -500,9 +500,9 @@
 		[CATransaction setAnimationDuration:kDefaultDuration];
 		[CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
 	}
-	else{
-		[CATransaction setDisableActions:YES];
-	}
+//	else{
+//		[CATransaction setDisableActions:YES];
+//	}
 	VOContentLayer *oldSelectedLayer = nil;
 	VOContentLayer *willSelectedLayer = nil;
 	if (oldIndex != VOSegmentedControlNoSegment && self.contentLayerArray.count > oldIndex) {

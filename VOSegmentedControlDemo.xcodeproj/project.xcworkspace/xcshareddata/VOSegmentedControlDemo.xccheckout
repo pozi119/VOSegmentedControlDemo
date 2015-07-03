@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>CFA8CEE9-799B-4536-8073-1421BA743DAA</string>
 	<key>IDESourceControlProjectName</key>
-	<string>project</string>
+	<string>VOSegmentedControlDemo</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>D9356A042CDA2547EFDDDE759F9118640F71F77C</key>
 		<string>https://github.com/pozi119/VOSegmentedControlDemo.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>VOSegmentedControlDemo.xcodeproj/project.xcworkspace</string>
+	<string>VOSegmentedControlDemo.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>D9356A042CDA2547EFDDDE759F9118640F71F77C</key>
