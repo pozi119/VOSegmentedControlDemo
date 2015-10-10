@@ -126,10 +126,8 @@
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated completion: (void (^)())completion{
 	_selected = selected;
-
 	if (animated) {
 		[CATransaction begin];
-		[CATransaction setDisableActions:NO];
 		[CATransaction setAnimationDuration: kContentAnimationDuration];
 		[CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
 		if (completion) {

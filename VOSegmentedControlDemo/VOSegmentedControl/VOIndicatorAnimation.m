@@ -62,7 +62,7 @@
 	moveAnim.keyPath = @"position";
 	moveAnim.fromValue = [NSValue valueWithCGPoint:fromPos];
 	moveAnim.toValue = [NSValue valueWithCGPoint:toPos];
-	moveAnim.duration = 0.5;
+	moveAnim.duration = duration;
 	moveAnim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
 	moveAnim.removedOnCompletion = NO;
 	moveAnim.fillMode = kCAFillModeForwards;

@@ -494,31 +494,32 @@
 	if (notify) {
 		[self notifyForSegmentChangeToIndex:index];
 	}
+    void(^moveIndicatorBlock)() = ^() {
+        [self indicatorChangeFromIndex:oldIndex ToIndex:index animated:animated];
+    };
 	if (animated) {
 		[CATransaction begin];
-		[CATransaction setDisableActions:NO];
 		[CATransaction setAnimationDuration:kDefaultDuration];
 		[CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+        [CATransaction setCompletionBlock:moveIndicatorBlock];
 	}
-//	else{
-//		[CATransaction setDisableActions:YES];
-//	}
 	VOContentLayer *oldSelectedLayer = nil;
 	VOContentLayer *willSelectedLayer = nil;
+    if (oldIndex == VOSegmentedControlNoSegment) {
+        [self.scrollLayer addSublayer:self.indicatorLayer];
+    }
 	if (oldIndex != VOSegmentedControlNoSegment && self.contentLayerArray.count > oldIndex) {
 		oldSelectedLayer = self.contentLayerArray[oldIndex];
 		[oldSelectedLayer setSelected:NO animated:animated completion:nil];
 	}
 	if (index != VOSegmentedControlNoSegment && self.contentLayerArray.count > index) {
 		willSelectedLayer = self.contentLayerArray[index];
-		[willSelectedLayer setSelected:YES animated:animated completion:nil];
+		[willSelectedLayer setSelected:YES animated:animated completion:moveIndicatorBlock];
 	}
 
-	if (oldIndex == VOSegmentedControlNoSegment) {
-		[self.scrollLayer addSublayer:self.indicatorLayer];
-	}
-	[CATransaction commit];
-	[self indicatorChangeFromIndex:oldIndex ToIndex:index animated:animated];
+    if (animated) {
+        [CATransaction commit];
+    }
 }
 
 - (void)scrollToIndex: (NSInteger)index {
@@ -560,6 +561,7 @@
 				break;
 				
 			default:
+                self.indicatorLayer.position = toPos;
 				break;
 		}
 	}
@@ -603,11 +605,7 @@
 	CGFloat lastX = MIN(MAX(leftX, curX), rightX);
 	if (curX < leftX || curX > rightX) {
 		CGFloat edgeX = (curX < leftX)? 0: rightX;
-		[CATransaction begin];
-		[CATransaction setAnimationDuration:kDefaultDuration];
-		[CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
 		[self.scrollLayer scrollToPoint:CGPointMake(edgeX, 0)];
-		[CATransaction commit];
 	}
 	self.lastPoint  = CGPointMake(lastX, 0);
 	if (self.isClick ) {

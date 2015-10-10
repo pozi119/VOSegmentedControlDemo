@@ -9,7 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "VOSegment.h"
 
-#define kContentAnimationDuration 0.5
+#define kContentAnimationDuration 0.3
 
 typedef NS_ENUM(NSUInteger, VOContentStyle) {
 	VOContentStyleTextAlone,				// 只有文字

@@ -33,7 +33,7 @@ enum {
 	VOSegmentedControlNoSegment = -1		// 未选择Segment
 };
 
-#define kDefaultDuration 1.0
+#define kDefaultDuration 0.3
 
 
 @interface VOSegmentedControl : UIControl <NSCoding>
