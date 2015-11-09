@@ -15,6 +15,8 @@
 @interface VOSegmentedControl ()
 @property (nonatomic, strong) NSMutableArray *segmentArray;
 @property (nonatomic, strong) NSMutableArray *contentLayerArray;
+@property (nonatomic, strong) NSMutableDictionary *showRedPointDic;
+@property (nonatomic, strong) NSMutableDictionary *redPointInsetsDic;
 
 @property (nonatomic, strong) CAScrollLayer  *scrollLayer;
 @property (nonatomic, strong) CALayer        *indicatorLayer;
@@ -57,6 +59,8 @@
 	// array
     self.segmentArray            = [NSMutableArray array];
     self.contentLayerArray       = [NSMutableArray array];
+    self.showRedPointDic         = [NSMutableDictionary dictionary];
+    self.redPointInsetsDic        = [NSMutableDictionary dictionary];
 
 	// ScrollView
 
@@ -271,9 +275,10 @@
         // 5. 添加contentLayers
         [self.contentLayerArray removeAllObjects];
         for (NSUInteger i = 0; i < self.segmentArray.count; i ++) {
+            VOSegment *segment =self.segmentArray[i];
             VOContentLayer *contentLayer = [VOContentLayer contentLayerWithFrame:CGRectMake(segSize.width * i, 0, segSize.width, segSize.height)
                                                                    contentInsets:contentInsets
-                                                                         segment:self.segmentArray[i]
+                                                                         segment:segment
                                                                     contentStyle:self.contentStyle];
             contentLayer.textColor = self.textColor;
             contentLayer.selectedTextColor = self.selectedTextColor;
@@ -293,6 +298,10 @@
             if (idx == self.selectedSegmentIndex) {
                 [contentLayer setSelected:YES];
             }
+            if (self.redPointInsetsDic[@(idx).stringValue]) {
+                contentLayer.redPointInsets = [self.redPointInsetsDic[@(idx).stringValue] UIEdgeInsetsValue];
+            }
+            contentLayer.showRedPoint = [self.showRedPointDic[@(idx).stringValue] boolValue];
         }];
         
         self.indicatorLayer.frame = self.scrollLayer.frame;
@@ -472,11 +481,11 @@
 #pragma mark - Index change
 
 - (void)setSelectedSegmentIndex:(NSInteger)index {
-	[self setSelectedSegmentIndex:index animated:NO notify:NO];
+	[self setSelectedSegmentIndex:index animated:NO notify:YES];
 }
 
 - (void)setSelectedSegmentIndex:(NSInteger)index animated:(BOOL)animated {
-	[self setSelectedSegmentIndex:index animated:animated notify:NO];
+	[self setSelectedSegmentIndex:index animated:animated notify:YES];
 }
 
 - (void)setSelectedSegmentIndex:(NSInteger)index animated:(BOOL)animated notify:(BOOL)notify {
@@ -561,12 +570,12 @@
 				break;
 				
 			default:
-                self.indicatorLayer.position = toPos;
+                [VOIndicatorAnimation smoothMoveIndicator:self.indicatorLayer fromPostion:fromPos toPosition:toPos duration:kDefaultDuration];
 				break;
 		}
 	}
 	else{
-		self.indicatorLayer.position = toPos;
+        [VOIndicatorAnimation smoothMoveIndicator:self.indicatorLayer fromPostion:fromPos toPosition:toPos duration:kDefaultDuration];
 	}
 	self.indicatorPos = toPos;
 
@@ -581,7 +590,9 @@
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event{
 	UITouch *touch = [[event touchesForView:self] anyObject];
 	CGPoint point = [touch locationInView:self];
-	if (ABS(point.x - self.startPoint.x) < 10 && ABS(point.y - self.startPoint.y) < 10 ){
+    CGFloat moveX = ABS(point.x - self.startPoint.x);
+    CGFloat moveY = ABS(point.y - self.startPoint.y);
+	if (sqrt(moveX * moveX + moveY * moveY) > 10){
 		self.isClick = NO;
 	}
 	CGFloat leftX = 0;
@@ -633,6 +644,31 @@
 			self.indexChangeBlock(index);
 		}
 	}
+}
+
+#pragma mark - redPoint
+- (void)setInset:(UIEdgeInsets)inset forSegmentRedPointAtIndex:(NSUInteger)index{
+    self.redPointInsetsDic[@(index).stringValue] = [NSValue valueWithUIEdgeInsets:inset];
+    if (index < self.contentLayerArray.count) {
+        VOContentLayer *contentLayer = self.contentLayerArray[index];
+        contentLayer.redPointInsets = inset;
+    }
+}
+
+-(void)setShow:(BOOL)show forSegmentRedPointAtIndex:(NSUInteger)index{
+    self.showRedPointDic[@(index).stringValue] = @(show);
+    if (index < self.contentLayerArray.count) {
+        VOContentLayer *contentLayer = self.contentLayerArray[index];
+        contentLayer.showRedPoint = show;
+    }
+}
+
+- (BOOL)isSegmentRedPointShowAtIndex:(NSUInteger)index{
+    if (index < self.contentLayerArray.count) {
+        VOContentLayer *contentLayer = self.contentLayerArray[index];
+        return contentLayer.showRedPoint;
+    }
+    return NO;
 }
 
 @end

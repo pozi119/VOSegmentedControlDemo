@@ -15,6 +15,7 @@
 @property (nonatomic, strong) CATextLayer    *selectedTextLayer;
 @property (nonatomic, strong) CALayer        *imageLayer;
 @property (nonatomic, strong) CALayer        *selectedImageLayer;
+@property (nonatomic, strong) CALayer        *redPointLayer;
 @property (nonatomic, assign) VOContentStyle contentStyle;
 @property (nonatomic, assign) UIEdgeInsets   contentInsets;
 
@@ -103,6 +104,31 @@
 		}
 	}
 	return _selectedImageLayer;
+}
+
+- (CALayer *)redPointLayer{
+    if (!_redPointLayer) {
+        CALayer *redPointLayer        = [CALayer layer];
+        redPointLayer.frame           = CGRectMake(0, 0, 6, 6);
+        redPointLayer.masksToBounds   = YES;
+        redPointLayer.cornerRadius    = 3;
+        redPointLayer.backgroundColor = [UIColor redColor].CGColor;
+        redPointLayer.hidden          = !self.showRedPoint;
+        _redPointLayer                = redPointLayer;
+        [self addSublayer:redPointLayer];
+        self.redPointInsets          = UIEdgeInsetsMake(12, 0, 0, 20);
+    }
+    return _redPointLayer;
+}
+
+- (void)setShowRedPoint:(BOOL)showRedPoint{
+    _showRedPoint = showRedPoint;
+    self.redPointLayer.hidden = !showRedPoint;
+}
+
+- (void)setRedPointInsets:(UIEdgeInsets)redPointInsets{
+    _redPointInsets = redPointInsets;
+    self.redPointLayer.position = CGPointMake(self.bounds.size.width - self.contentInsets.right - self.redPointInsets.right, self.contentInsets.top + self.redPointInsets.top);
 }
 
 - (void)setSegment:(VOSegment *)segment{

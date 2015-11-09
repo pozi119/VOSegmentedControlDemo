@@ -31,7 +31,9 @@ typedef NS_ENUM(NSUInteger, VOContentStyle) {
 
 @property (nonatomic, strong) VOSegment *segment;
 @property (nonatomic, assign) BOOL		selected;
-@property (nonatomic, assign) BOOL      clung;  // 当图片较小时,是否紧贴文字
+@property (nonatomic, assign) BOOL      clung;  /** 当图片较小时,是否紧贴文字 */
+@property (nonatomic, assign) UIEdgeInsets redPointInsets;   /** 小红点位置,以左上角为基准 */
+@property (nonatomic, assign) BOOL      showRedPoint;   /** 小红点位置 */
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated completion: (void (^)())completion;
 

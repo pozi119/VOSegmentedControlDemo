@@ -132,4 +132,30 @@ enum {
  */
 - (BOOL)isEnabledForSegmentAtIndex:(NSUInteger)index;
 
+#pragma mark - 小红点
+/**
+ *  设置小红点的位置(左上角为基准,inset的top和right有效)
+ *
+ *  @param inset 位置
+ *  @param index 所在分段
+ */
+- (void)setInset:(UIEdgeInsets)inset forSegmentRedPointAtIndex:(NSUInteger)index;
+
+/**
+ *  设置小红点是否显示
+ *
+ *  @param show  是否显示
+ *  @param index 所在的分段
+ */
+- (void)setShow:(BOOL)show forSegmentRedPointAtIndex:(NSUInteger)index;
+
+/**
+ *  小红点的显示状态
+ *
+ *  @param index 所在的分段
+ *
+ *  @return 是否显示
+ */
+- (BOOL)isSegmentRedPointShowAtIndex:(NSUInteger)index;
+
 @end
