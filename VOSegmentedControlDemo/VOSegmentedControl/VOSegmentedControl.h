@@ -66,7 +66,7 @@ enum {
 @property (nonatomic, strong ) NSArray         *segments;
 
 #pragma mark indexchange
-@property (nonatomic, weak  ) void  (^indexChangeBlock)(NSInteger index);
+@property (nonatomic, copy   ) void  (^indexChangeBlock)(NSInteger index);
 
 /**
  *  使用NSDictionary类型的Item数组初始化控件
