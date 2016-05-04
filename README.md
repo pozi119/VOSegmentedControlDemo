@@ -1,5 +1,14 @@
 # VOSegmentedControl
+[![License Apache](http://img.shields.io/cocoapods/l/VOSegmentedControlDemo.svg?style=flat)](https://raw.githubusercontent.com/pozi119/VOSegmentedControlDemo/master/LICENSE)&nbsp;
+[![CocoaPods](http://img.shields.io/cocoapods/v/VOSegmentedControlDemo.svg?style=flat)](http://cocoapods.org/?q=VOSegmentedControlDemo)&nbsp;
+[![CocoaPods](http://img.shields.io/cocoapods/p/VOSegmentedControlDemo.svg?style=flat)](http://cocoapods.org/?q=VOSegmentedControlDemo)&nbsp;
+[![Support](https://img.shields.io/badge/support-iOS%207%2B%20-blue.svg?style=flat)](https://www.apple.com/nl/ios/)&nbsp;
+[![Build Status](https://travis-ci.org/pozi119/VOSegmentedControlDemo.svg?branch=master)](https://travis-ci.org/pozi119/VOSegmentedControlDemo)
 
+#更新
+2016.5.4 添加cocoapods支持
+
+#使用说明
 1. 支持图片和文字,包含6种简单排版: 只有文字, 只有图片, 图片在上下左右
      只有图片时,图片如果比分段大,则只铺满整个分段,若比分段小,则为图片大小居中
     图片在左,右时,图片层为正方形, 最大边长是分段的高度,
