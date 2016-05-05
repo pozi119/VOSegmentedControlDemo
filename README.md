@@ -1,12 +1,20 @@
 # VOSegmentedControl
-[![License Apache](http://img.shields.io/cocoapods/l/VOSegmentedControlDemo.svg?style=flat)](https://raw.githubusercontent.com/pozi119/VOSegmentedControlDemo/master/LICENSE)&nbsp;
-[![CocoaPods](http://img.shields.io/cocoapods/v/VOSegmentedControlDemo.svg?style=flat)](http://cocoapods.org/?q=VOSegmentedControlDemo)&nbsp;
-[![CocoaPods](http://img.shields.io/cocoapods/p/VOSegmentedControlDemo.svg?style=flat)](http://cocoapods.org/?q=VOSegmentedControlDemo)&nbsp;
+[![License Apache](http://img.shields.io/cocoapods/l/VOSegmentedControl.svg?style=flat)](https://raw.githubusercontent.com/pozi119/VOSegmentedControlDemo/master/LICENSE)&nbsp;
+[![CocoaPods](http://img.shields.io/cocoapods/v/VOSegmentedControl.svg?style=flat)](http://cocoapods.org/?q=VOSegmentedControlDemo)&nbsp;
+[![CocoaPods](http://img.shields.io/cocoapods/p/VOSegmentedControl.svg?style=flat)](http://cocoapods.org/?q=VOSegmentedControlDemo)&nbsp;
 [![Support](https://img.shields.io/badge/support-iOS%207%2B%20-blue.svg?style=flat)](https://www.apple.com/nl/ios/)&nbsp;
 [![Build Status](https://travis-ci.org/pozi119/VOSegmentedControlDemo.svg?branch=master)](https://travis-ci.org/pozi119/VOSegmentedControlDemo)
 
 #更新
 2016.5.4 添加cocoapods支持
+
+#安装
+cocoapods导入:
+```ruby
+    pod 'VOSegmentedControl'
+```
+手动安装:
+将 ```VOSegmentedControl\VOSegmentedControl``` 文件夹拖入项目之中.
 
 #使用说明
 1. 支持图片和文字,包含6种简单排版: 只有文字, 只有图片, 图片在上下左右
