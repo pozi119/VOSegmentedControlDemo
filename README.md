@@ -14,7 +14,7 @@ cocoapods导入:
     pod 'VOSegmentedControl'
 ```
 手动安装:
-将 ```VOSegmentedControl\VOSegmentedControl``` 文件夹拖入项目之中.
+将 ```VOSegmentedControlDemo\VOSegmentedControl``` 文件夹拖入项目之中.
 
 #使用说明
 1. 支持图片和文字,包含6种简单排版: 只有文字, 只有图片, 图片在上下左右
